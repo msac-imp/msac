@@ -247,7 +247,7 @@ def init_session_state():
         "level": 1,
         "exp": 0,
         "hp": 100,
-        "current_area": 0,       # 0〜5（AREASのインデックス）
+        "current_area": 0,       # 0〜5（AREASのインデックス）、6は最終ミッション後のWebページ表示画面
         "step_cleared": [False] * 6,
         "keys_obtained": [],
         "items_obtained": [],
@@ -369,7 +369,10 @@ def render_sidebar():
         exp_ratio = max(0, min(EXP_PER_LEVEL, st.session_state.exp)) / EXP_PER_LEVEL
         st.progress(exp_ratio, text=f"{st.session_state.exp} / {EXP_PER_LEVEL}")
 
-        current_area_name = AREAS[st.session_state.current_area]["name"]
+        if st.session_state.current_area <= 5:
+            current_area_name = AREAS[st.session_state.current_area]["name"]
+        else:
+            current_area_name = "🌐 Webページ表示画面"
         st.markdown(f"📍 現在地：**{current_area_name}**")
 
         st.markdown("### 🔑 通信キー")
@@ -400,12 +403,12 @@ def render_sidebar():
                 st.session_state.current_area = max(0, st.session_state.current_area - 1)
                 st.rerun()
         with col_next:
-            can_advance = (
-                st.session_state.current_area < 5
-                and st.session_state.step_cleared[st.session_state.current_area]
-            )
+            if st.session_state.current_area <= 5:
+                can_advance = st.session_state.step_cleared[st.session_state.current_area]
+            else:
+                can_advance = False
             if st.button("次へ ➡", use_container_width=True, disabled=not can_advance):
-                st.session_state.current_area = min(5, st.session_state.current_area + 1)
+                st.session_state.current_area = min(6, st.session_state.current_area + 1)
                 st.rerun()
 
         pause_label = "▶ 再開" if st.session_state.paused else "⏸ 一時停止"
@@ -995,12 +998,66 @@ def show_step6():
                 add_item("ブラウザの鏡")
                 st.session_state.page_complete = True
 
-            if st.button("🏆 ゲームクリア画面を見る", type="primary"):
-                st.session_state.show_clear_screen = True
-                st.rerun()
+            st.info("サイドバーの「次へ」ボタンを押して、表示されたWebページを確認しよう。")
 
             with st.expander("📖 学習ポイント"):
                 st.write("ブラウザは、HTML、CSS、画像などを解析してWebページを表示します。")
+
+
+# =========================================================
+# Webページ表示結果画面（最終ミッションクリア後、「次へ」で到達）
+# =========================================================
+def show_webpage_result():
+    st.markdown(
+        """
+        <div class="parchment-card" style="text-align:center;">
+        <h2>🌐 Webページが表示されました</h2>
+        <p>ブラウザが通信の6つのエリアをすべて経て、Webページを完成させました。</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        """
+        <div class="final-page">
+        <h2>🏰 テーマパーク案内</h2>
+        <h4>夢と冒険の一日へ</h4>
+        <p>ようこそ、テーマパーク案内ページへ。</p>
+        <div class="final-page-card">
+        <b>本日のお知らせ</b>
+        <ul><li>開園時間をご確認ください</li><li>イベント情報を公開しました</li></ul>
+        </div>
+        <div class="final-page-card">
+        <b>施設案内</b>
+        <ul><li>アトラクション</li><li>レストラン</li><li>ショップ</li></ul>
+        </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown(
+        """
+        <div class="npc-box">
+        👑 ブラウザ王<br>
+        「よくやった、通信士よ。URLの入力から始まり、DNS、HTTP、パケット通信を経て、
+        ブラウザがHTML・CSS・画像を組み立て、ついにWebページが表示された。」
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    with st.expander("📖 学習ポイント：Webページが表示されるまでの流れ"):
+        st.write(
+            "URLの入力 → DNSによる名前解決 → Webサーバへの接続 → HTTPリクエスト → "
+            "パケット通信 → ブラウザによる描画、という一連の流れを経て、"
+            "Webページはようやく画面に表示されます。"
+        )
+
+    if st.button("🏆 ゲームクリア画面を見る", type="primary", use_container_width=True):
+        st.session_state.show_clear_screen = True
+        st.rerun()
 
 
 # =========================================================
@@ -1126,7 +1183,10 @@ def main():
 
     with left_col:
         step_funcs = [show_step1, show_step2, show_step3, show_step4, show_step5, show_step6]
-        step_funcs[st.session_state.current_area]()
+        if st.session_state.current_area <= 5:
+            step_funcs[st.session_state.current_area]()
+        else:
+            show_webpage_result()
 
     with right_col:
         render_right_panel()
