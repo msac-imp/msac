@@ -104,15 +104,18 @@ def inject_css():
         """
         <style>
         .stApp {
-            background: linear-gradient(180deg, #0b0f2b 0%, #1a1440 60%, #241a4d 100%);
+            background: linear-gradient(180deg, #f4efe3 0%, #eae2f2 55%, #f7f0e0 100%);
+        }
+        html, body, [class*="css"] {
+            color: #2b2440;
         }
         .parchment-card {
-            background: linear-gradient(180deg, #f5ecd7 0%, #ecdcb8 100%);
-            border: 2px solid #b8860b;
+            background: linear-gradient(180deg, #fffaf0 0%, #f7ecd0 100%);
+            border: 2px solid #c9a13b;
             border-radius: 16px;
             padding: 18px 22px;
             margin-bottom: 14px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+            box-shadow: 0 3px 8px rgba(80,60,20,0.15);
             color: #3b2b12;
         }
         .parchment-card h1, .parchment-card h2, .parchment-card h3,
@@ -124,14 +127,14 @@ def inject_css():
             text-align: center;
             font-size: 40px;
             font-weight: 900;
-            color: #ffd76a;
-            text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+            color: #7a4fd6;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.15);
             margin-bottom: 0px;
         }
         .rpg-subtitle {
             text-align: center;
             font-size: 18px;
-            color: #d8c6ff;
+            color: #5a4a8a;
             margin-top: 4px;
             margin-bottom: 20px;
         }
@@ -146,12 +149,12 @@ def inject_css():
         .key-obtained {
             background: linear-gradient(180deg, #ffe27a, #d9a441);
             color: #3b2b12;
-            border: 2px solid #ffd76a;
+            border: 2px solid #c9a13b;
         }
         .key-locked {
-            background: #3a3a4a;
-            color: #9a9aae;
-            border: 2px solid #55556a;
+            background: #e6e2ee;
+            color: #8c86a3;
+            border: 2px solid #cfc7e0;
         }
         .map-current {
             background: linear-gradient(180deg, #ffe27a, #d9a441);
@@ -160,10 +163,10 @@ def inject_css():
             padding: 10px 6px;
             text-align: center;
             font-weight: 800;
-            box-shadow: 0 0 14px 4px rgba(255, 215, 106, 0.7);
+            box-shadow: 0 0 10px 2px rgba(217, 164, 65, 0.6);
         }
         .map-cleared {
-            background: linear-gradient(180deg, #9be79b, #4caf50);
+            background: linear-gradient(180deg, #bdeebb, #6fc26f);
             color: #123312;
             border-radius: 14px;
             padding: 10px 6px;
@@ -171,12 +174,13 @@ def inject_css():
             font-weight: 700;
         }
         .map-locked {
-            background: #2c2c40;
-            color: #8888a0;
+            background: #e6e2ee;
+            color: #7d7695;
             border-radius: 14px;
             padding: 10px 6px;
             text-align: center;
             font-weight: 700;
+            border: 1px solid #d3cbe6;
         }
         .url-proto {
             background: #2a6fdb; color: white; padding: 8px 12px;
@@ -205,12 +209,12 @@ def inject_css():
             border: 1px solid #4a4a6a;
         }
         .npc-box {
-            background: rgba(255,255,255,0.08);
-            border-left: 5px solid #ffd76a;
+            background: #f0e9fb;
+            border-left: 5px solid #7a4fd6;
             border-radius: 8px;
             padding: 10px 14px;
             margin-bottom: 10px;
-            color: #f0eaff;
+            color: #3b2f5c;
         }
         .final-page {
             background: #ffffff;
