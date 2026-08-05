@@ -864,12 +864,15 @@ def show_step6():
         unsafe_allow_html=True,
     )
 
-    all_keys_ready = len(st.session_state.keys_obtained) >= 6
+    # ブラウザのキー（6番目）はこの最終ミッションをクリアして初めて手に入るキーなので、
+    # 神殿に入るための条件は「それ以外の5つのキー」がそろっていることとする。
+    required_keys_before_final = [k["name"] for k in NET_KEYS[:5]]
+    all_keys_ready = all(k in st.session_state.keys_obtained for k in required_keys_before_final)
     if not all_keys_ready:
         st.warning("まだ通信キーがそろっていません。前のエリアに戻って集めましょう。")
         return
 
-    st.success("6つの通信キーがそろっている！ブラウザ王が門を開いた。")
+    st.success("5つの通信キーがそろっている！ブラウザ王が門を開いた。最後の鍵は、この試練の先にある。")
 
     st.session_state.step6_random_mode = st.checkbox(
         "サーバの応答をランダムにする（教員向けオプション）",
@@ -1098,17 +1101,23 @@ def main():
         return
 
     if st.session_state.show_clear_screen:
-        render_sidebar()
         show_clear_screen()
+        render_sidebar()
         return
 
-    render_sidebar()
-
     st.markdown('<div class="rpg-title" style="font-size:28px;">🗝️ ネットワーク・クエスト</div>', unsafe_allow_html=True)
-    render_world_map()
+
+    # ワールドマップの表示位置だけを先に確保しておき、
+    # 中身はミッション処理（クリア判定）が終わったあとに描画する。
+    # こうすることで、ミッションをクリアした直後の再実行でも
+    # チェックマークやボタンの有効/無効がすぐに反映される。
+    map_container = st.container()
 
     if st.session_state.paused:
+        with map_container:
+            render_world_map()
         st.info("冒険を一時停止しています。")
+        render_sidebar()
         return
 
     show_levelup_effect()
@@ -1121,6 +1130,14 @@ def main():
 
     with right_col:
         render_right_panel()
+
+    # ミッション処理（STEPクリア判定など）が終わったあとにマップとサイドバーを描画する。
+    # サイドバーは画面上は左側に固定表示されるが、コード上でここに置くことで
+    # 「次へ」ボタンの有効/無効が最新の状態を反映するようになる。
+    with map_container:
+        render_world_map()
+
+    render_sidebar()
 
 
 if __name__ == "__main__":
